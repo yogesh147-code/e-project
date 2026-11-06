@@ -1,18 +1,20 @@
 import os
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from src.exception import CustomException
 from src.logger import logging
-
+from data_transformation import Data_transformation
 
 @dataclass
 class DataIngestionConfig:
-    train_data_path: str = os.path.join("artifacts", "train.csv")
-    test_data_path: str = os.path.join("artifacts", "test.csv")
-    raw_data_path: str = os.path.join("artifacts", "data.csv")
+    artifacts_dir: Path = Path(__file__).resolve().parents[2] / "artifacts"
+    train_data_path: str = str(artifacts_dir / "train.csv")
+    test_data_path: str = str(artifacts_dir / "test.csv")
+    raw_data_path: str = str(artifacts_dir / "data.csv")
 
 
 class DataIngestion:
@@ -22,8 +24,9 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion method or component")
         try:
-            # Prefer relative path or configuration variable over hardcoded user path
-            data_source_path = os.path.join("notebook", "data", "stud.csv")
+            data_source_path = (
+                Path(__file__).resolve().parents[2] / "notebook" / "data" / "stud.csv"
+            )
             df = pd.read_csv(data_source_path)
             logging.info("Read the dataset as dataframe")
 
@@ -51,3 +54,6 @@ class DataIngestion:
 if __name__ == "__main__":
     obj = DataIngestion()
     train_data, test_data = obj.initiate_data_ingestion()
+    
+    data_transformation=Data_transformation()
+    data_transformation.initate_transformation(train_data,test_data)
