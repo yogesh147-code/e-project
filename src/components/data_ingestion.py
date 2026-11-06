@@ -9,6 +9,8 @@ from src.exception import CustomException
 from src.logger import logging
 from data_transformation import Data_transformation
 
+from model_trainer import Model_trainer
+
 @dataclass
 class DataIngestionConfig:
     artifacts_dir: Path = Path(__file__).resolve().parents[2] / "artifacts"
@@ -56,4 +58,8 @@ if __name__ == "__main__":
     train_data, test_data = obj.initiate_data_ingestion()
     
     data_transformation=Data_transformation()
-    data_transformation.initate_transformation(train_data,test_data)
+    train_data,test_data=data_transformation.initate_transformation(train_data,test_data)
+    
+    model_trainer=Model_trainer()
+    score=model_trainer.initate_model_training(train_data,test_data)
+    print(score)
